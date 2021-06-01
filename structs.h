@@ -1,12 +1,12 @@
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
 
 
 typedef struct game{
     int difficulty;
     int game_mode;
+
 }game;
 
 typedef struct matrix{
@@ -36,6 +36,24 @@ matrix init_matrix(){
     }
 
     return game_grid;
+}
+
+void show_grid(matrix game_matrix){
+    //coord title
+    printf("  ");
+    for (int num = 0; num < game_matrix.length; ++num) {
+        printf(" %d", num + 1);
+    }
+    printf("\n  ____________________\n");
+
+    for (int column = 0; column < game_matrix.height; ++column) {
+        printf("%c| ", column + 97);
+
+        for (int line = 0; line < game_matrix.length ; ++line) {
+            printf("%c ",game_matrix.grid[line][column]);
+        }
+        printf("\n");
+    }
 }
 
 
