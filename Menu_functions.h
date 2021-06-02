@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <time.h>
-#include <stdlib.h>
-
-
 int main_menu() {
     int menu_choice;
     do {

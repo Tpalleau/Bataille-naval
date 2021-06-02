@@ -8,4 +8,5 @@ include_directories(.)
 add_executable(Bataille_naval
         main.c
         Menu_functions.h
-        structs.h game_fuctions.h)
+        structs.h
+        init_funcs.h)
