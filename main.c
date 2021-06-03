@@ -17,7 +17,7 @@ int main(){
 
     matrix game_grid;
     inventory missiles;
-    boat boat_list[4];
+    boat boat_list[5];
 
     srand(time(0));
 
@@ -40,9 +40,16 @@ int main(){
         game_grid = init_matrix();
         missiles = init_inventory(difficulty_mode);
 
+//        for (int boat_n = 0; boat_n < 5; ++boat_n) {
+//            printf("size: %d\n",boat_list[boat_n].size);
+
+//        }
+
+        fill_grid(game_grid, boat_list);
         show_grid(game_grid);
 
     }
+
 }
 
 
