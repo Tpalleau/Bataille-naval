@@ -48,6 +48,7 @@ void get_coord(int *coord) {
     do {
         printf("Where are you aiming (A,B,C... ?\n");
         scanf("%d",&coordinates_1);
+        toupper(coordinates_1);
     } while ( coordinates_1 < 65 || coordinates_1 > 74);
 
     do {
