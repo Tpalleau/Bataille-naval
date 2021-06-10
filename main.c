@@ -17,7 +17,6 @@ int main(){
     int difficulty_mode;
 
     matrix player_grid;
-    matrix AI_grid;
     inventory missiles;
     boat boat_list[5];
 
@@ -40,17 +39,15 @@ int main(){
         //init structs
         init_boat_list(boat_list);
         player_grid = init_matrix();
-        AI_grid = init_matrix();
         missiles = init_inventory(difficulty_mode);
 
 
-        fill_AI_grid(&AI_grid, boat_list);
+        fill_AI_grid(boat_list);
         show_grid(player_grid);
-        show_grid(AI_grid);
 
         while (play){
-            play = ask_actions();
-
+            play = ask_actions(boat_list, &player_grid, 1);
+            show_grid(player_grid);
 
         }
 

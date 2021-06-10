@@ -64,7 +64,10 @@ inventory init_inventory(int difficulty){
 }
 
 
-matrix fill_AI_grid(matrix *AI_grid, boat *boat_list){
+matrix fill_AI_grid(boat *boat_list){
+    matrix AI_grid;
+    AI_grid = init_matrix();
+
     int x;
     int y;
     int space_free;
@@ -73,25 +76,25 @@ matrix fill_AI_grid(matrix *AI_grid, boat *boat_list){
 
         //generate new coordinates depending on direction and size while not found space
         do {
-            if (boat_list[boat_n].direction){
-                x = rand() % (AI_grid->length - boat_list[boat_n].size);
-                y = rand() % AI_grid->height;
+            if (boat_list[boat_n].direction == 0){
+                x = rand() % (10 - boat_list[boat_n].size);
+                y = rand() % 10;
             }else{
-                x = rand() % AI_grid->length;
-                y = rand() % (AI_grid->height - boat_list[boat_n].size);
+                x = rand() % 10;
+                y = rand() % (10 - boat_list[boat_n].size);
             }
 
             space_free = 1;
             for (int element = 0; element < boat_list[boat_n].size - 1; ++element) {
-                if (boat_list[boat_n].direction){
+                if (boat_list[boat_n].direction){//check on y axis if space is free to place a boat
 
-                    //check on x axis if space is free to place a boat
-                    if (AI_grid->grid[element][y] != AI_grid->grid[element + 1][y]){
+
+                    if (AI_grid.grid[element][y] != AI_grid.grid[element + 1][y]){
                         space_free = 0;
                     }
                 }else{
                     //check on x axis if space is free to place a boat
-                    if (AI_grid->grid[x][element] != AI_grid->grid[x][element + 1]){
+                    if (AI_grid.grid[x][element] != AI_grid.grid[x][element + 1]){
                         space_free = 0;
                     }
                 }
@@ -104,11 +107,11 @@ matrix fill_AI_grid(matrix *AI_grid, boat *boat_list){
                 //fill the grid for the next check
                 if (boat_list[boat_n].direction){
                     for (int element = x; element < x + boat_list[boat_n].size; ++element) {
-                        AI_grid->grid[element][y] = 118 + boat_n;
+                        AI_grid.grid[element][y] = 118;
                     }
                 }else{
                     for (int element = y; element < y + boat_list[boat_n].size; ++element) {
-                        AI_grid->grid[x][element] = 118 + boat_n;
+                        AI_grid.grid[x][element] = 118;
                     }
                 }
 
