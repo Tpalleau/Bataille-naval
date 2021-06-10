@@ -6,6 +6,7 @@
 #include "structs.h"
 #include "Menu_functions.h"
 #include "init_funcs.h"
+#include "game_func.h"
 
 int main(){
 
@@ -15,7 +16,8 @@ int main(){
     int game_mode;
     int difficulty_mode;
 
-    matrix game_grid;
+    matrix player_grid;
+    matrix AI_grid;
     inventory missiles;
     boat boat_list[5];
 
@@ -37,16 +39,20 @@ int main(){
 
         //init structs
         init_boat_list(boat_list);
-        game_grid = init_matrix();
+        player_grid = init_matrix();
+        AI_grid = init_matrix();
         missiles = init_inventory(difficulty_mode);
 
-//        for (int boat_n = 0; boat_n < 5; ++boat_n) {
-//            printf("size: %d\n",boat_list[boat_n].size);
 
-//        }
+        fill_AI_grid(&AI_grid, boat_list);
+        show_grid(player_grid);
+        show_grid(AI_grid);
 
-        fill_grid(game_grid, boat_list);
-        show_grid(game_grid);
+        while (play){
+            play = ask_actions();
+
+
+        }
 
     }
 

@@ -1,18 +1,18 @@
 
 matrix init_matrix(){
-    matrix game_grid;
-    game_grid.length = 10;
-    game_grid.height = 10;
+    matrix grid;
+    grid.length = 10;
+    grid.height = 10;
 
     // fill grid with '_'
-    for (int line = 0; line < game_grid.length; ++line) {
-        for (int column = 0; column < game_grid.height; ++column) {
+    for (int line = 0; line < grid.length; ++line) {
+        for (int column = 0; column < grid.height; ++column) {
 
-            game_grid.grid[line][column] = '_';
+            grid.grid[line][column] = '_';
         }
     }
 
-    return game_grid;
+    return grid;
 }
 
 void init_boat_list(boat *boat_list) {
@@ -24,6 +24,14 @@ void init_boat_list(boat *boat_list) {
 
     for (int boat_n = 0; boat_n < 5; ++boat_n) {
         boat_list[boat_n].direction = rand() % 2;
+
+        // state of boat
+        char boat_state[boat_list[boat_n].size];
+        boat_list[boat_n].state = boat_state;
+        for (int i = 0; i < boat_list[boat_n].size; ++i) {
+            boat_state[i] = 'O';
+
+        }
     }
 }
 
@@ -55,26 +63,8 @@ inventory init_inventory(int difficulty){
     return missile;
 }
 
-void show_grid(matrix game_matrix){
-    //coord numbers
-    printf("  ");
-    for (int num = 0; num < game_matrix.length; ++num) {
-        printf(" %d", num + 1);
-    }
-    printf("\n  ____________________\n");
 
-    for (int column = 0; column < game_matrix.height; ++column) {
-        // coord letters
-        printf("%c| ", column + 97);
-
-        for (int line = 0; line < game_matrix.length ; ++line) {
-            printf("%c ",game_matrix.grid[line][column]);
-        }
-        printf("\n");
-    }
-}
-
-matrix fill_grid(matrix AI_grid, boat *boat_list){
+matrix fill_AI_grid(matrix *AI_grid, boat *boat_list){
     int x;
     int y;
     int space_free;
@@ -84,11 +74,11 @@ matrix fill_grid(matrix AI_grid, boat *boat_list){
         //generate new coordinates depending on direction and size while not found space
         do {
             if (boat_list[boat_n].direction){
-                x = rand() % (AI_grid.length - boat_list[boat_n].size);
-                y = rand() % AI_grid.height;
+                x = rand() % (AI_grid->length - boat_list[boat_n].size);
+                y = rand() % AI_grid->height;
             }else{
-                x = rand() % AI_grid.length;
-                y = rand() % (AI_grid.height - boat_list[boat_n].size);
+                x = rand() % AI_grid->length;
+                y = rand() % (AI_grid->height - boat_list[boat_n].size);
             }
 
             space_free = 1;
@@ -96,12 +86,12 @@ matrix fill_grid(matrix AI_grid, boat *boat_list){
                 if (boat_list[boat_n].direction){
 
                     //check on x axis if space is free to place a boat
-                    if (AI_grid.grid[element][y] != AI_grid.grid[element + 1][y]){
+                    if (AI_grid->grid[element][y] != AI_grid->grid[element + 1][y]){
                         space_free = 0;
                     }
                 }else{
                     //check on x axis if space is free to place a boat
-                    if (AI_grid.grid[x][element] != AI_grid.grid[x][element + 1]){
+                    if (AI_grid->grid[x][element] != AI_grid->grid[x][element + 1]){
                         space_free = 0;
                     }
                 }
@@ -114,22 +104,18 @@ matrix fill_grid(matrix AI_grid, boat *boat_list){
                 //fill the grid for the next check
                 if (boat_list[boat_n].direction){
                     for (int element = x; element < x + boat_list[boat_n].size; ++element) {
-                        AI_grid.grid[element][y] = 'X';
+                        AI_grid->grid[element][y] = 118 + boat_n;
                     }
                 }else{
                     for (int element = y; element < y + boat_list[boat_n].size; ++element) {
-                        AI_grid.grid[x][element] = 'X';
+                        AI_grid->grid[x][element] = 118 + boat_n;
                     }
                 }
 
             }
         } while (!space_free);
-    }for (int n = 0; n < 5; ++n) {
-        printf("%d:%d and size %d,%d\n",boat_list[n].spawn[0], boat_list[n].spawn[1],
-               boat_list[n].size, boat_list[n].direction);
-        }
+    }
     printf("grid\n");
-    show_grid(AI_grid);
     printf("\n\n\n");
 }
 

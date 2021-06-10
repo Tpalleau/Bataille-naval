@@ -9,4 +9,4 @@ add_executable(Bataille_naval
         main.c
         Menu_functions.h
         structs.h
-        init_funcs.h)
+        init_funcs.h game_func.h)
