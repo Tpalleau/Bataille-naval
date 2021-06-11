@@ -118,9 +118,9 @@ void get_coord(int *coord) {
     //creating an array that will stock our coordinates so we can display them
     // error control with the coordinates, we use the ASCII code for the coordinates in A,B,C...
     do {
-        printf("Where are you aiming (A,B,C... ?");
-        coordinates_1 = getchar();
-        coordinates_1 = toupper(coordinates_1);
+        printf("Where are you aiming (A,B,C... ?\n");
+        scanf("%c",&c);
+        coordinates_1 = toupper(c);
 
     } while ( coordinates_1 < 65 || coordinates_1 > 74);
     do {
@@ -159,6 +159,17 @@ int ask_actions(boat *boat_list, matrix *grid,int bomb_type) {
     }
 
     return play;
+}
+
+int get_missile() {
+    int typemissile;
+    do {
+        printf("What type of missile do you want to use ?\n"
+               "(Normal : 1 ; artillery : 2 ; bombs : 3 ; tactical : 4)\n");
+        scanf("%d", &typemissile);
+    } while (typemissile < 1 || typemissile > 4)
+
+    return typemissile;
 }
 
 #ifndef MAIN_C_GAME_FUNC_H
