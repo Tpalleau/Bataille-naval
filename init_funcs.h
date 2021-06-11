@@ -26,10 +26,8 @@ void init_boat_list(boat *boat_list) {
         boat_list[boat_n].direction = rand() % 2;
 
         // state of boat
-        char boat_state[boat_list[boat_n].size];
-        boat_list[boat_n].state = boat_state;
         for (int i = 0; i < boat_list[boat_n].size; ++i) {
-            boat_state[i] = 'O';
+            boat_list[boat_n].state[i] = 'O';
 
         }
     }
@@ -118,7 +116,7 @@ matrix fill_AI_grid(boat *boat_list){
             }
         } while (!space_free);
     }
-    printf("grid\n");
+    show_grid(AI_grid);
     printf("\n\n\n");
 }
 

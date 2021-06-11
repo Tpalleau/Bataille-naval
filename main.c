@@ -5,8 +5,8 @@
 
 #include "structs.h"
 #include "Menu_functions.h"
-#include "init_funcs.h"
 #include "game_func.h"
+#include "init_funcs.h"
 
 int main(){
 
