@@ -167,7 +167,7 @@ int get_missile() {
         printf("What type of missile do you want to use ?\n"
                "(Normal : 1 ; artillery : 2 ; bombs : 3 ; tactical : 4)\n");
         scanf("%d", &typemissile);
-    } while (typemissile < 1 || typemissile > 4)
+    } while (typemissile < 1 || typemissile > 4);
 
     return typemissile;
 }
