@@ -128,6 +128,16 @@ void get_coord(int *coord) {
     coord[1]=coordinates_2 - 65;
 }
 
+int get_missile(bomb_type) {
+    do {
+        printf("What type of missile do you want to use ?\n"
+               "(Normal : 1 ; artillery : 2 ; bombs : 3 ; tactical : 4)\n");
+        scanf("%d", &bomb_type);
+    } while (bomb_type < 1 || bomb_type > 4);
+
+    return bomb_type;
+}
+
 int ask_actions(boat *boat_list, matrix *grid,int bomb_type) {
     int action;
     int coord[1];
