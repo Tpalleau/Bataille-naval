@@ -11,7 +11,7 @@
 int main(){
 
     int run_game = 1;
-    int play = 1;
+    int play;
     int menu_mode;
     int game_mode;
     int difficulty_mode;
@@ -23,6 +23,7 @@ int main(){
     srand(time(0));
 
     while (run_game){
+        play = 1;
         menu_mode = main_menu();
 
         // menu options
@@ -46,7 +47,7 @@ int main(){
         show_grid(player_grid);
 
         while (play){
-            play = ask_actions(boat_list, &player_grid, 1);
+            play = ask_actions(boat_list, &player_grid, &missiles);
             show_grid(player_grid);
 
         }

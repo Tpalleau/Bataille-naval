@@ -22,56 +22,80 @@ int apply_damage(boat *boat_list,matrix *player_grid, int bomb_type, int *coord)
     int boat_n = 0;
     int boat_x;
     int boat_y;
+    int coord_x = coord[0];
+    int coord_y = coord[1];
 
-    switch (bomb_type) {
-        case 2 ... 3:
-            break;
+    if (bomb_type == 2) {
+        for (int i = 0; i < 10; ++i) {
+            player_grid->grid[coord_x][i] = 'O';
+            player_grid->grid[i][coord_y] = 'O';
+        }
 
-        default:
-            while (boat_n < 5 && !hit){ //if all boats checked and nothing or hit a boat
-                boat_x = boat_list[boat_n].spawn[0];
-                boat_y = boat_list[boat_n].spawn[1]; //make things more readable
+        for (int boat_n = 0; boat_n < 5; ++boat_n) {
+            boat_x = boat_list[boat_n].spawn[0];
+            boat_y = boat_list[boat_n].spawn[1];
 
-                for (int element = 0; element < boat_list[boat_n].size; ++element) { //check all coord of boat
+            for (int element = 0; element < boat_list[boat_n].size; ++element) {
+                if (boat_list[boat_n].direction == 0) {
+                    if (coord_x == boat_x + element || coord_y == boat_y) {
+                        player_grid->grid[boat_x + element][boat_y] = 'X';
+                        boat_list[boat_n].state[element] = 1;
+                    }
+                }else {
+                    if (coord[0] == boat_x || coord[1] == boat_y + element) {
+                        player_grid->grid[boat_x][boat_y + element] = 'X';
+                        boat_list[boat_n].state[element] = 1;
+                    }
+                }
+            }
+        }
 
-                    if (boat_list[boat_n].direction == 0){ //x oriented boats
-                        if (hit && bomb_type == 4){
+    }else {
+        while (boat_n < 5 && !hit) { //if all boats checked and nothing or hit a boat
+            boat_x = boat_list[boat_n].spawn[0];
+            boat_y = boat_list[boat_n].spawn[1]; //make things more readable
+
+            for (int element = 0; element < boat_list[boat_n].size; ++element) { //check all coord of boat
+
+                if (boat_list[boat_n].direction == 0) { //x oriented boats
+                    if (hit && bomb_type == 4) { //update grid and boat state
+                        player_grid->grid[boat_x + element][boat_y] = 'X';
+                        boat_list[boat_n].state[element] = 1;
+
+                    } else if (coord[0] == boat_x + element && coord[1] == boat_y) {
+                        hit = 1;
+
+                        if (bomb_type == 4) { //reset loop so that it fills everything
+                            element = -1;
+                        } else { //if bomb type 1 update grid and boat state
                             player_grid->grid[boat_x + element][boat_y] = 'X';
                             boat_list[boat_n].state[element] = 1;
-
-                        }else if(coord[0] ==  boat_x + element && coord[1] == boat_y){
-                                hit = 1;
-
-                            if (bomb_type == 4){ //reset loop so that it fills everything
-                                element = -1;
-                            }else{
-                                player_grid->grid[boat_x + element][boat_y] = 'X';
-                                boat_list[boat_n].state[element] = 1;
-                            }
                         }
-                    }else{ //y oriented boat
-                        if (hit && bomb_type == 4){
+                    }
+                } else { //y oriented boat
+                    if (hit && bomb_type == 4) {
+                        player_grid->grid[boat_x][boat_y + element] = 'X';
+                        boat_list[boat_n].state[element] = 1;
+
+                    } else if (coord[0] == boat_x && coord[1] == boat_y + element) {
+                        hit = 1;
+
+                        if (bomb_type == 4) {
+                            element = -1;
+                        } else {
                             player_grid->grid[boat_x][boat_y + element] = 'X';
                             boat_list[boat_n].state[element] = 1;
-
-                        }else if (coord[0] == boat_x && coord[1] == boat_y + element){
-                            hit = 1;
-
-                            if (bomb_type == 4){
-                                element = -1;
-                            }else{
-                                player_grid->grid[boat_x][boat_y + element] = 'X';
-                                boat_list[boat_n].state[element] = 1;
-                            }
                         }
                     }
                 }
-                boat_n++;
             }
-            if (!hit){
-                player_grid->grid[coord[0]][coord[1]] = 'O';
-            }
-            
+            boat_n++;
+        }
+
+        if (!hit) {
+            player_grid->grid[coord[0]][coord[1]] = 'O';
+        }
+
     }
 }
 

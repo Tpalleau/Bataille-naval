@@ -88,24 +88,17 @@ matrix fill_AI_grid(boat *boat_list){
 
                     if (AI_grid.grid[x + element][y] != '_') {
                         space_free = 0;
-                    } else {
-                        printf("free x%d y%d boat:%d size:%d grid value %c\n", x, y, boat_n, boat_list[boat_n].size,
-                               AI_grid.grid[x + element][y]);
                     }
                 } else {
                     //check on y axis if space is free to place a boat
                     if (AI_grid.grid[x][y + element] != '_') {
                         space_free = 0;
-                    } else {
-                        printf("free x%d y%d boat:%d size:%d grid value %c\n", x, y, boat_n, boat_list[boat_n].size,
-                               AI_grid.grid[x][y + element]);
                     }
                 }
             }
 
         } while (!space_free);
 
-        printf("x: %d and y: %d and dir: %d\n", x, y, boat_list[boat_n].direction);
         boat_list[boat_n].spawn[0] = x;
         boat_list[boat_n].spawn[1] = y;
 
