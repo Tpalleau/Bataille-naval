@@ -41,14 +41,14 @@ int main(){
         init_boat_list(boat_list);
         player_grid = init_matrix();
         missiles = init_inventory(difficulty_mode);
-
-
         fill_AI_grid(boat_list);
-        show_grid(player_grid);
 
         while (play){
-            play = ask_actions(boat_list, &player_grid, &missiles);
-            show_grid(player_grid);
+
+            if (game_mode != 2){
+                show_grid(player_grid);
+            }
+            play = ask_actions(boat_list, &player_grid, &missiles, game_mode == 2);
 
         }
 

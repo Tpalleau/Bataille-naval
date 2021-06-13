@@ -113,7 +113,6 @@ matrix fill_AI_grid(boat *boat_list){
             }
         }
     }
-    show_grid(AI_grid);
     printf("\n\n\n");
 }
 
