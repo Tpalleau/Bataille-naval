@@ -22,26 +22,24 @@ int apply_damage(boat *boat_list,matrix *player_grid, int bomb_type, int *coord)
     int boat_n = 0;
     int boat_x;
     int boat_y;
-    int coord_x = coord[0];
-    int coord_y = coord[1];
 
     if (bomb_type == 2) {
-        for (int i = 0; i < 10; ++i) {
-            player_grid->grid[coord_x][i] = 'O';
-            player_grid->grid[i][coord_y] = 'O';
+        for (int i = 0; i < 10; ++i) { // set all lines artillery applies to, to miss
+            player_grid->grid[coord[0]][i] = 'O';
+            player_grid->grid[i][coord[1]] = 'O';
         }
 
-        for (int boat_n = 0; boat_n < 5; ++boat_n) {
+        for (int boat_n = 0; boat_n < 5; ++boat_n) { //check for every boat
             boat_x = boat_list[boat_n].spawn[0];
             boat_y = boat_list[boat_n].spawn[1];
 
-            for (int element = 0; element < boat_list[boat_n].size; ++element) {
-                if (boat_list[boat_n].direction == 0) {
-                    if (coord_x == boat_x + element || coord_y == boat_y) {
+            for (int element = 0; element < boat_list[boat_n].size; ++element) { //for length of boat
+                if (boat_list[boat_n].direction == 0) { // x axis
+                    if (coord[0] == boat_x + element || coord[1] == boat_y) { //if coord is same as boat element update grid and boat state
                         player_grid->grid[boat_x + element][boat_y] = 'X';
                         boat_list[boat_n].state[element] = 1;
                     }
-                }else {
+                }else { // y axis
                     if (coord[0] == boat_x || coord[1] == boat_y + element) {
                         player_grid->grid[boat_x][boat_y + element] = 'X';
                         boat_list[boat_n].state[element] = 1;
@@ -50,8 +48,43 @@ int apply_damage(boat *boat_list,matrix *player_grid, int bomb_type, int *coord)
             }
         }
 
-    }else {
-        while (boat_n < 5 && !hit) { //if all boats checked and nothing or hit a boat
+    }else if (bomb_type == 3) {
+        for (int y = -2; y < 3; ++y) { // start at the bottom
+            for (int x = abs(y) - 2; x < -(abs(y) - 2) + 1; ++x) { // algo to only check necessary squares
+
+                // check if x and y are in grid
+                if (coord[1]+y>= 0 && coord[1]+y<= player_grid->length-1 && coord[0]+x>= 0 && coord[0]+x<= player_grid->length-1) {
+                    player_grid->grid[coord[0] + x][coord[1] + y] = 'o'; //set by default to miss
+
+                    for (int boat_n = 0; boat_n < 5; ++boat_n) { //check every boat
+                        for (int element = 0; element < boat_list[boat_n].size; ++element) { //check all element of boat
+                            boat_x = boat_list[boat_n].spawn[0];
+                            boat_y = boat_list[boat_n].spawn[1];
+
+                            if (boat_list[boat_n].direction == 0) { //x axis
+                                if (coord[0] + x == boat_x + element && coord[1] + y == boat_y) {
+                                    player_grid->grid[coord[0] + x][coord[1] + y] = 'x';
+                                    boat_list[boat_n].state[element] = 1;
+
+                                }
+                            } else { //y axis
+                                if (coord[0] + x == boat_x && coord[1] + y == boat_y + +element) {
+                                    player_grid->grid[coord[0] + x][coord[1] + y] = 'x';
+                                    boat_list[boat_n].state[element] = 1;
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }else{
+        player_grid->grid[coord[0]][coord[1]] = 'O';
+
+        while (boat_n < 5 && !hit) { //if all boats checked and nothing or hit a boat then quit
             boat_x = boat_list[boat_n].spawn[0];
             boat_y = boat_list[boat_n].spawn[1]; //make things more readable
 
@@ -91,11 +124,6 @@ int apply_damage(boat *boat_list,matrix *player_grid, int bomb_type, int *coord)
             }
             boat_n++;
         }
-
-        if (!hit) {
-            player_grid->grid[coord[0]][coord[1]] = 'O';
-        }
-
     }
 }
 
