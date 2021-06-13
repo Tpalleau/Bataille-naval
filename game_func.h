@@ -18,91 +18,60 @@ void show_grid(matrix grid){
 }
 
 int apply_damage(boat *boat_list,matrix *player_grid, int bomb_type, int *coord) {
-    int boat_coord[1];
-    int hit;
+    int hit = 0;
+    int boat_n = 0;
+    int boat_x;
+    int boat_y;
 
-    //depending on bombe type different checking methode
     switch (bomb_type) {
-        // normal, artillery, bomb
-        case 1 ... 3:
-
-            // check for every boat
-            for (int boat_n = 0; boat_n < 5; ++boat_n) {
-                //check for every element of the boat
-                for (int element = 0; element < boat_list[boat_n].size; ++element) {
-                    hit = 0;
-                    //set boat coordinates
-                    if (boat_list[boat_n].direction == 0) {
-                        boat_coord[0] = boat_list[boat_n].spawn[0] + element;
-                        boat_coord[1] = boat_list[boat_n].spawn[1];
-                    } else {
-                        boat_coord[0] = boat_list[boat_n].spawn[0];
-                        boat_coord[1] = boat_list[boat_n].spawn[1] - element;
-                    }
-
-                    // check if hit depending on the bomb
-                    switch (bomb_type) {
-                        case 1://normal bomb
-                            if (coord[0] == boat_coord[0] && coord[1] == boat_coord[1]) {
-                                hit = 1;
-                            }
-                        case 2://artillery
-                            if (coord[0] == boat_coord[0] || coord[1] == boat_coord[1]) {
-                                hit = 1;
-                            }
-                    }
-
-                    // update grid, if hit update boat
-                    if (hit) {
-                        boat_list[boat_n].state[element] = 'X';
-                        player_grid->grid[coord[1]][coord[0]] = 'X';
-
-                    } else {
-                        player_grid->grid[coord[1]][coord[0]] = '0';
-                    }
-
-                }
-
-            }
-            break;
-            // tactical bomb
-        case 4:
-            hit = 0;
-            int boat_n = 0;
-
-            do {
-                for (int element = 0; element < boat_list[boat_n].size; ++element) {
-                    // set coord
-                    if (boat_list[boat_n].direction == 0) {
-                        boat_coord[0] = boat_list[boat_n].spawn[0] + element;
-                        boat_coord[1] = boat_list[boat_n].spawn[1];
-                    } else {
-                        boat_coord[0] = boat_list[boat_n].spawn[0];
-                        boat_coord[1] = boat_list[boat_n].spawn[1] - element;
-                    }
-                    // check if boat is hit
-                    if (boat_coord[0] == coord[0] && boat_coord[1] == coord[1]){
-                        hit = 1;
-                    }
-                    boat_n++;
-                }
-
-            } while (!hit || boat_n<5);//exit only if a boat is hit or run through all boats
-
-            if (hit){//if boat hit destroy all the boat
-                for (int element = 0; element < boat_list[boat_n].size; ++element) {
-                    boat_list[boat_n].state[element] = 'X';
-
-                    if (boat_list[boat_n].direction == 0){
-                        player_grid->grid[coord[1]][coord[0] + element] = 'X';
-                    }else{
-                        player_grid->grid[coord[1] + element][coord[0]] = 'X';
-                    }
-                }
-            }
+        case 2 ... 3:
             break;
 
+        default:
+            while (boat_n < 5 && !hit){ //if all boats checked and nothing or hit a boat
+                boat_x = boat_list[boat_n].spawn[0];
+                boat_y = boat_list[boat_n].spawn[1]; //make things more readable
 
+                for (int element = 0; element < boat_list[boat_n].size; ++element) { //check all coord of boat
+
+                    if (boat_list[boat_n].direction == 0){ //x oriented boats
+                        if (hit && bomb_type == 4){
+                            player_grid->grid[boat_x + element][boat_y] = 'X';
+                            boat_list[boat_n].state[element] = 1;
+
+                        }else if(coord[0] ==  boat_x + element && coord[1] == boat_y){
+                                hit = 1;
+
+                            if (bomb_type == 4){ //reset loop so that it fills everything
+                                element = -1;
+                            }else{
+                                player_grid->grid[boat_x + element][boat_y] = 'X';
+                                boat_list[boat_n].state[element] = 1;
+                            }
+                        }
+                    }else{ //y oriented boat
+                        if (hit && bomb_type == 4){
+                            player_grid->grid[boat_x][boat_y + element] = 'X';
+                            boat_list[boat_n].state[element] = 1;
+
+                        }else if (coord[0] == boat_x && coord[1] == boat_y + element){
+                            hit = 1;
+
+                            if (bomb_type == 4){
+                                element = -1;
+                            }else{
+                                player_grid->grid[boat_x][boat_y + element] = 'X';
+                                boat_list[boat_n].state[element] = 1;
+                            }
+                        }
+                    }
+                }
+                boat_n++;
+            }
+            if (!hit){
+                player_grid->grid[coord[0]][coord[1]] = 'O';
+            }
+            
     }
 }
 
@@ -128,18 +97,35 @@ void get_coord(int *coord) {
     coord[1]=coordinates_2 - 65;
 }
 
-int get_missile(bomb_type) {
+int get_missile(inventory *missiles) {
+    int bomb_type;
     do {
         printf("What type of missile do you want to use ?\n"
                "(Normal : 1 ; artillery : 2 ; bombs : 3 ; tactical : 4)\n");
         scanf("%d", &bomb_type);
     } while (bomb_type < 1 || bomb_type > 4);
 
+    switch (bomb_type) {
+        case 1:
+            missiles->normal - 1;
+            break;
+        case 2:
+            missiles->artillery - 1;
+            break;
+        case 3:
+            missiles->bombs - 1;
+            break;
+        case 4:
+            missiles->tactical - 1;
+            break;
+    }
+
     return bomb_type;
 }
 
-int ask_actions(boat *boat_list, matrix *grid,int bomb_type) {
+int ask_actions(boat *boat_list, matrix *grid,inventory *missiles) {
     int action;
+    int bomb_type;
     int coord[1];
     int play = 1;
 
@@ -152,6 +138,7 @@ int ask_actions(boat *boat_list, matrix *grid,int bomb_type) {
 
     switch (action) {
         case 1:
+            bomb_type = get_missile(*&missiles);
             get_coord(coord);
             apply_damage(boat_list,*&grid,bomb_type, coord);
             break;
@@ -162,17 +149,6 @@ int ask_actions(boat *boat_list, matrix *grid,int bomb_type) {
     }
 
     return play;
-}
-
-int get_missile() {
-    int typemissile;
-    do {
-        printf("What type of missile do you want to use ?\n"
-               "(Normal : 1 ; artillery : 2 ; bombs : 3 ; tactical : 4)\n");
-        scanf("%d", &typemissile);
-    } while (typemissile < 1 || typemissile > 4);
-
-    return typemissile;
 }
 
 #ifndef MAIN_C_GAME_FUNC_H

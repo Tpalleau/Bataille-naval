@@ -17,7 +17,7 @@ typedef struct{
     int size;
     int direction;
     int spawn[2];
-    char state[4];
+    int state[4];
 }boat;
 
 
