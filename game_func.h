@@ -21,11 +21,6 @@ int apply_damage(boat *boat_list,matrix *player_grid, int bomb_type, int *coord)
     int boat_coord[1];
     int hit;
 
-    for (int i = 0; i < 2; ++i) {
-        printf("%d\n", coord[i]);
-
-    }
-
     //depending on bombe type different checking methode
     switch (bomb_type) {
         // normal, artillery, bomb
@@ -118,18 +113,19 @@ void get_coord(int *coord) {
     //creating an array that will stock our coordinates so we can display them
     // error control with the coordinates, we use the ASCII code for the coordinates in A,B,C...
     do {
+        printf("Where are you aiming (1,2,3... ?\n");
+        scanf("%d",&coordinates_1);
+    } while (coordinates_1 < 1 || coordinates_1 > 10);
+
+    do {
         printf("Where are you aiming (A,B,C... ?\n");
         scanf("%c",&c);
-        coordinates_1 = toupper(c);
+        coordinates_2 = toupper(c);
 
-    } while ( coordinates_1 < 65 || coordinates_1 > 74);
-    do {
-        printf("Where are you aiming (1,2,3... ?\n");
-        scanf("%d",&coordinates_2);
-    } while (coordinates_2 < 1 || coordinates_2 > 10);
+    } while ( coordinates_2 < 65 || coordinates_2 > 74);
 
-    coord[0]=coordinates_1 - 65;
-    coord[1]=coordinates_2 - 1;
+    coord[0]=coordinates_1 - 1;
+    coord[1]=coordinates_2 - 65;
 }
 
 int ask_actions(boat *boat_list, matrix *grid,int bomb_type) {
@@ -147,9 +143,6 @@ int ask_actions(boat *boat_list, matrix *grid,int bomb_type) {
     switch (action) {
         case 1:
             get_coord(coord);
-            for (int i = 0; i < 2; ++i) {
-                printf("coord %d is %d\n", i, coord[i]);
-            }
             apply_damage(boat_list,*&grid,bomb_type, coord);
             break;
 

@@ -22,6 +22,7 @@ void init_boat_list(boat *boat_list) {
     boat_list[3].size = 4;
     boat_list[4].size = 5;
 
+    // direction of boat, x->0, y->1
     for (int boat_n = 0; boat_n < 5; ++boat_n) {
         boat_list[boat_n].direction = rand() % 2;
 
@@ -71,50 +72,53 @@ matrix fill_AI_grid(boat *boat_list){
     int space_free;
 
     for (int boat_n = 0; boat_n < 5; ++boat_n) {
-
         //generate new coordinates depending on direction and size while not found space
         do {
-            if (boat_list[boat_n].direction == 0){
+            if (boat_list[boat_n].direction == 0) {
                 x = rand() % (10 - boat_list[boat_n].size);
                 y = rand() % 10;
-            }else{
+            } else {
                 x = rand() % 10;
                 y = rand() % (10 - boat_list[boat_n].size);
             }
 
             space_free = 1;
-            for (int element = 0; element < boat_list[boat_n].size - 1; ++element) {
-                if (boat_list[boat_n].direction){//check on y axis if space is free to place a boat
+            for (int element = 0; element < boat_list[boat_n].size; ++element) {
+                if (boat_list[boat_n].direction == 0) {//check on x axis if space is free to place a boat
 
-
-                    if (AI_grid.grid[element][y] != AI_grid.grid[element + 1][y]){
+                    if (AI_grid.grid[x + element][y] != '_') {
                         space_free = 0;
+                    } else {
+                        printf("free x%d y%d boat:%d size:%d grid value %c\n", x, y, boat_n, boat_list[boat_n].size,
+                               AI_grid.grid[x + element][y]);
                     }
-                }else{
-                    //check on x axis if space is free to place a boat
-                    if (AI_grid.grid[x][element] != AI_grid.grid[x][element + 1]){
+                } else {
+                    //check on y axis if space is free to place a boat
+                    if (AI_grid.grid[x][y + element] != '_') {
                         space_free = 0;
+                    } else {
+                        printf("free x%d y%d boat:%d size:%d grid value %c\n", x, y, boat_n, boat_list[boat_n].size,
+                               AI_grid.grid[x][y + element]);
                     }
                 }
             }
-            //if space is free put the coord in the boat struct
-            if (space_free){
-                boat_list[boat_n].spawn[0] = x;
-                boat_list[boat_n].spawn[1] = y;
 
-                //fill the grid for the next check
-                if (boat_list[boat_n].direction){
-                    for (int element = x; element < x + boat_list[boat_n].size; ++element) {
-                        AI_grid.grid[element][y] = 118;
-                    }
-                }else{
-                    for (int element = y; element < y + boat_list[boat_n].size; ++element) {
-                        AI_grid.grid[x][element] = 118;
-                    }
-                }
-
-            }
         } while (!space_free);
+
+        printf("x: %d and y: %d and dir: %d\n", x, y, boat_list[boat_n].direction);
+        boat_list[boat_n].spawn[0] = x;
+        boat_list[boat_n].spawn[1] = y;
+
+        //fill the grid for the next check
+        if (boat_list[boat_n].direction == 0) {
+            for (int element = x; element < x + boat_list[boat_n].size; ++element) {
+                AI_grid.grid[element][y] = 118;
+            }
+        } else {
+            for (int element = y; element < y + boat_list[boat_n].size; ++element) {
+                AI_grid.grid[x][element] = 118;
+            }
+        }
     }
     show_grid(AI_grid);
     printf("\n\n\n");
