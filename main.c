@@ -7,6 +7,7 @@
 #include "Menu_functions.h"
 #include "game_func.h"
 #include "init_funcs.h"
+#include "save_files.h"
 
 int main(){
 
@@ -30,7 +31,7 @@ int main(){
         if (menu_mode == 1){
             game_mode = mode_menu();
             difficulty_mode = difficulty_menu();
-        }else if (menu_mode == 2) { //quand on creera la sauvegarde:
+        }else if (menu_mode == 2) { //save func:
             ;
         }else if(menu_mode == 3){
                 run_game = 0;
