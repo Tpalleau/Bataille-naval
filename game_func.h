@@ -223,12 +223,13 @@ int apply_damage(boat *boat_list,matrix *player_grid, int bomb_type, int *coord,
             boat_n++;
         }
     }
-
-    while (j < 19 && !exit){
+    exit = 0;
+    j = 0;
+    while (j < 19 && !exit && give_coord){
         if (coord_list[0][j] == -1){
             exit = 1;
         }else{
-            printf("hit x:%d y:%d", coord_list[0][j], coord_list[1][j]);
+            printf("hit x:%d y:%d\n", coord_list[0][j], coord_list[1][j]);
         }
         j++;
     }
